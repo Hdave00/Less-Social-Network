@@ -1,0 +1,63 @@
+<!-- this page will show the posts of the followed users, for the current user-->
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="container my-4">
+        <h3 class="text-center text-dark fw-bold"><i class="bi bi-clock"></i> Recent Posts from People You Follow</h3>
+    </div>
+
+    {% for post in posts %}
+        <div class="container mb-3">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        <div class="ms-2">
+                            <a href="/user/{{ post.user }}" class="fw-bold text-dark text-decoration-none">@{{ post.user }}</a>
+                            <div class="text-muted small">{{ post.timestamp }}</div>
+                        </div>
+                    </div>
+
+                    <p class="post-context mb-3">{{ post.content }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="like-count-label me-1" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                            <button class="like-button border-0 bg-transparent" data-post-id="{{ post.id }}">
+                                {% if user.is_authenticated and user in post.likes.all %}
+                                    <i class="bi bi-heart-fill text-danger" id="like-icon-{{ post.id }}"></i>
+                                {% else %}
+                                    <i class="bi bi-heart" id="like-icon-{{ post.id }}"></i>
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- pagination -->
+    {% if pagination %}
+        <div class="d-flex justify-content-center my-4">
+            <nav>
+                <ul class="pagination">
+                    {% if current_page.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill" href="?page={{ current_page.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if current_page.has_next %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill" href="?page={{ current_page.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}

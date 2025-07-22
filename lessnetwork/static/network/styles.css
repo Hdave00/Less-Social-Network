@@ -1,0 +1,29 @@
+.edit-label {
+    cursor: pointer;
+}
+
+/* Addition 3 v1.0 alpha */
+.bold-card {
+  border-left: 8px solid crimson;
+  background-color: #fff0f0;
+}
+
+.curious-card {
+  border-left: 8px solid teal;
+  background-color: #f0ffff;
+}
+
+.melancholic-card {
+  border-left: 8px solid slateblue;
+  background-color: #f5f5ff;
+}
+
+.lively-card {
+  border-left: 8px solid gold;
+  background-color: #fffff0;
+}
+
+.mysterious-card {
+  border-left: 8px solid black;
+  background-color: #f2f2f2;
+}

@@ -1,0 +1,103 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+    <div class="container my-4">
+        <h3 class="text-center text-dark fw-bold"><i class="bi bi-megaphone-fill"></i> Latest Posts</h3>
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="container mb-4">
+            <div class="card shadow-sm border-0 rounded-lg">
+                <div class="card-body">
+                    <h5 class="card-title text-dark"><i class="bi bi-pencil-square"></i> Create a New Post</h5>
+                    <form id="newPostForm" method="POST" action="{% url 'index' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea id="newPostText" name="post-text" class="form-control rounded-3"
+                                      rows="3" placeholder="What's on your mind?" required></textarea>
+                        </div>
+
+                        <!-- addition 5 v1.0 alpha -->
+                        <label>Publish Time (optional):</label>
+                        <input type="datetime-local" name="publish_time">
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">Share a joke...</small>
+                            <button type="submit" class="btn btn-primary btn-sm rounded-pill">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- addition 14 v1.0 alpha full block -->
+    {% for post_info in post_data %}
+        {% with post=post_info.post personality=post_info.personality %}
+            <div class="container mb-3">
+                <div class="card shadow-sm border-0 rounded-lg {{ personality }}-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="ms-2">
+                                <a href="/user/{{ post.user }}" class="fw-bold text-dark text-decoration-none">@{{ post.user }}</a>
+                                <div class="text-muted small">{{ post.timestamp }}</div>
+                            </div>
+                        </div>
+
+                        <p class="post-context mb-3">{{ post.content }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="like-count-label me-1" id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                                <button class="like-button border-0 bg-transparent" data-post-id="{{ post.id }}">
+                                    {% if user.is_authenticated and user in post.likes.all %}
+                                        <i class="bi bi-heart-fill text-danger" id="like-icon-{{ post.id }}"></i>
+                                    {% else %}
+                                        <i class="bi bi-heart" id="like-icon-{{ post.id }}"></i>
+                                    {% endif %}
+                                </button>
+                            </div>
+
+                            {% if user.is_authenticated and post.user == user %}
+                                <span class="edit-label text-dark small" style="cursor: pointer;" onclick="edit_post(this)" data-post-id="{{ post.id }}">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endwith %}
+    {% endfor %}
+
+    <!-- pagination -->
+    {% if pagination %}
+        <div class="d-flex justify-content-center my-4">
+            <nav>
+                <ul class="pagination">
+                    {% if current_page.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill" href="?page={{ current_page.previous_page_number }}"></i> <- Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if current_page.has_next %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm rounded-pill" href="?page={{ current_page.next_page_number }}">Next -> </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/script.js' %}?v={{ request.user.id }}" defer></script>
+{% endblock script %}

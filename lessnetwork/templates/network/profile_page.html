@@ -1,0 +1,86 @@
+<!-- this page will show the profile page of the user, where they will be able to see, all of that users posts,
+ the follow/unfollow toggle,
+ and the number of followers and following for the current user-->
+
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+ {% block body %}
+     <div class="container">
+         <div class="row my-2 align-items-center">
+             <div class="col-auto">
+                 <h3>
+                     <i class="bi bi-person-circle"></i>
+                     {{ user_profile.username }}
+                 </h3>
+             </div>
+
+             <div class="col-auto">
+                 {% if not is_own_profile %}
+                     <form action="{% url 'profile_page' user_profile.username %}" method="post">
+                         {% csrf_token %}
+                         <button id="follow-button" class="btn btn-primary {% if is_following %}active{% endif %}" type="submit">
+                             {% if is_following %}
+                                 Unfollow
+                             {% else %}
+                                 Follow
+                             {% endif %}
+                         </button>
+                     </form>
+                 {% endif %}
+             </div>
+         </div>
+
+         <!-- followers and following -->
+         <div class="row my-2">
+             <div class="col-auto">
+                 <i class="bi bi-people"></i> Following: <span id="following-count">{{ following_count }}</span>
+             </div>
+             <div class="col-auto">
+                 <i class="bi bi-people-fill"></i> Followers: <span id="follower-count">{{ follower_count }}</span>
+             </div>
+         </div>
+
+         <!-- addition 4 v1.0 alpha -->
+         <h3>{{ user_profile.username }}</h3>
+        <p class="text-muted">Personality: {{ user_profile.profile.personality }}</p>
+
+         <!-- posts of that user -->
+         <div class="row my-2">
+             <div class="col">
+                 {% for post in user_posts %}
+                     <div class="card my-2">
+                        <!-- addition 2 v1.0 alpha -->
+                        <div class="card mb-3 {{ user_profile.personality|lower }}-card">
+                            <div class="card-body">
+                                <p class="text-muted" style="font-size: 12px"><i class="bi bi-clock"></i> <span>Posted on: {{ post.timestamp }}</span></p>
+                                <i class="bi bi-chat-right-text-fill"></i> <span>{{ post.content }}</span>
+                            </div>
+                         </div>
+                     </div>
+                 {% endfor %}
+             </div>
+         </div>
+     </div>
+
+     <!-- pagination -->
+    {% if pagination %}
+        <div class="mx-4 my-2">
+            <nav>
+                <ul class="pagination">
+                    {% if current_page.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ current_page.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if current_page.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ current_page.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+ {% endblock %}
