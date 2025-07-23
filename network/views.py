@@ -24,9 +24,12 @@ def index(request):
 
         # ensure content is not empty
         if content:
-            Post.objects.create(user=request.user, content=content)
+            Post.objects.create(
+                user=request.user,
+                content=content,
+                publish_time=timezone.now()  # auto-set
+            )
             return redirect("index")
-
     # pagination setup
     max_posts = 10
     # show newest posts first
@@ -54,7 +57,12 @@ def index(request):
     # addition 12 v1.0 alpha
     post_data = []
     for post in current_page:
-        personality = getattr(post.user.profile, 'personality', 'curious').lower()
+        personality = getattr(
+            getattr(post.user, 'profile', None),
+            'personality',
+            'Curious'
+        ).lower()
+
         post_data.append({
             "post": post,
             "personality": personality,

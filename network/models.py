@@ -73,6 +73,15 @@ class Post(models.Model):
         }
 
 
+class TarotCard(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='tarot_cards/')  # or URLField if using static images
+
+    def __str__(self):
+        return self.name
+
+
 # Addition 1 v1.0 alpha
 class Profile(models.Model):
     PERSONALITY_CHOICES = [
