@@ -1,5 +1,5 @@
 """
-ASGI config for project4 project.
+ASGI config for networkproject.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
