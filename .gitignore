@@ -1,4 +1,4 @@
-/network/
+/net/
 __pycache__/
 *.pyc
 *.sqlite3
