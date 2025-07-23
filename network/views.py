@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 
-from .models import User, Post
+from .models import User, Post, TarotCard
 
 
 def index(request):
@@ -27,13 +27,22 @@ def index(request):
             Post.objects.create(
                 user=request.user,
                 content=content,
-                publish_time=timezone.now()  # auto-set
+                publish_time=timezone.now(),  # auto-set
+                tarot_card=tarot_card
             )
             return redirect("index")
     # pagination setup
     max_posts = 10
     # show newest posts first
     posts = Post.objects.all().order_by("-timestamp")
+
+    card_id = request.POST.get("tarot_card")
+    tarot_card = TarotCard.objects.get(id=card_id) if card_id else None
+    if card_id:
+        try:
+            tarot_card = TarotCard.objects.get(id=card_id)
+        except TarotCard.DoesNotExist:
+            pass
 
     # check if user has liked post, but non signed in users cant like
     if request.user.is_authenticated:
@@ -46,7 +55,7 @@ def index(request):
     # addition 11 v1.0 alpha
     visible_posts = Post.objects.filter(
     Q(publish_time__isnull=True) | Q(publish_time__lte=timezone.now()),
-    Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now())).order_by('-timestamp')
+    Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now())).select_related('user__profile', 'tarot_card').order_by('-timestamp')
 
     # continue paginator setup
     paginator = Paginator(visible_posts.select_related('user__profile'), max_posts) # addition 11 v1.0 alpha
@@ -172,7 +181,7 @@ def profile_page(request, user_name):
         return redirect('profile_page', user_name=user_name)
 
     # elif its a GET request then render the profile page, order the posts in reverse chrono order
-    user_posts = Post.objects.filter(user=user_profile).order_by('-timestamp')
+    user_posts = Post.objects.filter(user=user_profile).select_related('tarot_card').order_by('-timestamp')
     is_own_profile = current_user == user_profile
     is_following = current_user.following.filter(id=user_profile.id).exists()
 

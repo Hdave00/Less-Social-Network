@@ -26,6 +26,15 @@ class User(AbstractUser):
         }
 
 
+class TarotCard(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to='tarot_cards/', null=True, blank=True)  # optional
+
+    def __str__(self):
+        return self.name
+
+
 class Post(models.Model):
     """ here we have post listings and its attributes for showing which posts belong to whom, who made the post, how many likes
     that post has """
@@ -36,6 +45,14 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    tarot_card = models.ForeignKey(
+        TarotCard,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="posts"
+    )
 
     # added 6 v1.0 alpha
     publish_time = models.DateTimeField(null=True, blank=True)
@@ -71,15 +88,6 @@ class Post(models.Model):
             "likes": self.like_count(),
             "liked_by_user": user in self.likes.all() if user else False,
         }
-
-
-class TarotCard(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    image = models.ImageField(upload_to='tarot_cards/')  # or URLField if using static images
-
-    def __str__(self):
-        return self.name
 
 
 # Addition 1 v1.0 alpha

@@ -1,4 +1,5 @@
 /net/
+network/migrations
 __pycache__/
 *.pyc
 *.sqlite3

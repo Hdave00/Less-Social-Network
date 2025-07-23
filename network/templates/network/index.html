@@ -20,10 +20,11 @@
                                       rows="3" placeholder="What's on your mind?" required></textarea>
                         </div>
 
-                        <!-- addition 5 v1.0 alpha depricated 
-                        <label>Publish Time (optional):</label>
-                        <input type="datetime-local" name="publish_time">
-                        -->
+                        <button type="button" class="btn btn-outline-dark btn-sm rounded-pill mt-2"
+                                data-bs-toggle="modal" data-bs-target="#tarotModal">
+                            Choose Tarot Card
+                        </button>
+                        <input type="hidden" name="tarot_card" id="tarotCardInput">
 
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <small class="text-muted">Share a joke...</small>
@@ -35,12 +36,41 @@
         </div>
     {% endif %}
 
+    <div class="modal fade" id="tarotModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select a Tarot Card</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                {% for card in tarot_cards %}
+                <button type="button" class="list-group-item list-group-item-action tarot-option"
+                        data-card-id="{{ card.id }}" data-card-name="{{ card.name }}">
+                    <strong>{{ card.name }}</strong><br>
+                    <small>{{ card.description }}</small>
+                </button>
+                {% endfor %}
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <!-- addition 14 v1.0 alpha full block -->
     {% for post_info in post_data %}
         {% with post=post_info.post personality=post_info.personality %}
             <div class="container mb-3">
                 <div class="card shadow-sm border-0 rounded-lg {{ personality }}-card">
                     <div class="card-body">
+                        <!-- ahowing tarot cards -->
+                        {% if post.tarot_card %}
+                            <div class="tarot-card-preview my-2 p-2 rounded text-center">
+                                <strong>{{ post.tarot_card.name }}</strong><br>
+                                <small class="text-muted">{{ post.tarot_card.description }}</small>
+                            </div>
+                        {% endif %}
                         <div class="d-flex align-items-center mb-2">
                             <div class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                 <i class="bi bi-person"></i>

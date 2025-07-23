@@ -13,6 +13,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     console.log("Event delegation for like buttons set up.");
+
+    // Tarot card selection
+    const tarotModal = document.getElementById("tarotModal");
+    if (tarotModal) {
+        tarotModal.querySelectorAll(".tarot-option").forEach(button => {
+            button.addEventListener("click", function () {
+                const cardId = this.dataset.cardId;
+                document.getElementById("tarotCardInput").value = cardId;
+
+                // Close modal after selection
+                const modalInstance = bootstrap.Modal.getInstance(tarotModal);
+                modalInstance.hide();
+            });
+        });
+    }
 });
 
 

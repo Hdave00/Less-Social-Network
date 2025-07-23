@@ -12,6 +12,14 @@
         <div class="container mb-3">
             <div class="card shadow-sm border-0 rounded-lg">
                 <div class="card-body">
+
+                    <!-- showing tarot cards -->
+                    {% if post.tarot_card %}
+                        <div class="tarot-card-preview my-2 p-2 rounded text-center">
+                            <strong>{{ post.tarot_card.name }}</strong><br>
+                            <small class="text-muted">{{ post.tarot_card.description }}</small>
+                        </div>
+                    {% endif %}
                     <div class="d-flex align-items-center mb-2">
                         <div class="avatar bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                             <i class="bi bi-person"></i>

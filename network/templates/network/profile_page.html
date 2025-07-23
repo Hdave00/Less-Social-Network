@@ -50,16 +50,25 @@
          <div class="row my-2">
              <div class="col">
                  {% for post in user_posts %}
-                     <div class="card my-2">
-                        <!-- addition 2 v1.0 alpha -->
-                        <div class="card mb-3 {{ user_profile.personality|lower }}-card">
+                    <div class="card my-2">
+                        <!-- personality border style -->
+                        <div class="card mb-3 {{ user_profile.profile.personality|lower }}-card">
                             <div class="card-body">
-                                <p class="text-muted" style="font-size: 12px"><i class="bi bi-clock"></i> <span>Posted on: {{ post.timestamp }}</span></p>
+                                <p class="text-muted" style="font-size: 12px">
+                                    <i class="bi bi-clock"></i> <span>Posted on: {{ post.timestamp }}</span>
+                                </p>
                                 <i class="bi bi-chat-right-text-fill"></i> <span>{{ post.content }}</span>
+
+                                {% if post.tarot_card %}
+                                    <div class="tarot-card-preview my-2 p-2 rounded text-center">
+                                        <strong>{{ post.tarot_card.name }}</strong><br>
+                                        <small>{{ post.tarot_card.description }}</small>
+                                    </div>
+                                {% endif %}
                             </div>
-                         </div>
-                     </div>
-                 {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
              </div>
          </div>
      </div>
